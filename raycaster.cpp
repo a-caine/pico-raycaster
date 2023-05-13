@@ -5,6 +5,10 @@
 #include "pico_display.hpp"
 #include "drivers/st7789/st7789.hpp"
 #include "libraries/pico_graphics/pico_graphics.hpp"
+//#include <cmath>
+
+// Set this to a non zero value to enable darkness effects
+#define DARKNESS_FALLOFF 1
 
 using namespace pimoroni;
 
@@ -13,6 +17,7 @@ static PicoGraphics_PenRGB332 graphics(st7789.width, st7789.height, nullptr);
 
 static uint16_t w = st7789.width;
 static uint16_t h = st7789.height;
+
 
 /** Reset the state of all pixels. */
 void clear() {
@@ -157,40 +162,103 @@ void draw_vertical_line(int16_t x, int16_t start, int16_t end, uint8_t col, uint
     b = 0;
 
     switch (col) {
-        case 1:
+        case 1: // Gray
+            r = 96 / brightness;
+            g = 96 / brightness;
+            b = 96 / brightness;
+            break;
+        case 2: // Red
             r = 255 / brightness;
             break;
-        case 2:
+        case 3: // Green
             g = 255 / brightness;
             break;
-        case 3:
+        case 4: // Blue
             b = 255 / brightness;
             break;
-        case 4:
-            r = 128 / brightness;
-            g = 128 / brightness;
-            break;
-        case 5:
+        case 5: // Yellow
+            r = 255 / brightness;
             g = 255 / brightness;
-            b = 128 / brightness;
+            break;
+        case 6: // Magenta
+            r = 255 / brightness;
+            b = 255 / brightness;
+            break;
+        case 7: // Cyan
+            g = 255 / brightness;
+            b = 255 / brightness;
+            break;
+        case 8: // White
+            r = 255 / brightness;
+            g = 255 / brightness;
+            b = 255 / brightness;
+            break;
+        default: // Black
+            r = 0;
+            g = 0;
+            b = 0;
             break;
     }
 
-    graphics.set_pen(r, g, b);
+    // Draw the ceiling/sky
+    graphics.set_pen(128, 128, 200); // Light blue
+    for (uint16_t i = 0; i < start; i++) {
+        graphics.set_pixel(Point(x, i));
+    }
+
+    // Draw the object
+    graphics.set_pen(r, g, b); // Colour of the object the ray struck
     for (uint16_t i = start; i <= end; i++) {
         graphics.set_pixel(Point(x, i));
     }
-}
 
-/** Move the camera by the specified amounts. */
-void move(uint8_t dir, double speed) {
-    switch (dir) {
-        case 0: // Forward
-            camera.pos_x += camera.dir_x * speed;
-            camera.pos_y += camera.dir_y * speed;
-            break;
+    // Draw the floor
+    graphics.set_pen(40, 150, 40); // Dark Green
+    for (uint16_t i = end + 1; i < h; i++) {
+        graphics.set_pixel(Point(x, i));
     }
     
+}
+
+/** Move the camera given the delta time. */
+void move(bool backward, double d_time) {
+
+    double d_speed = d_time * MOVE_SPEED * (backward ? -1 : 1);
+
+    // Checks if the new position is valid or not (not a proper collision check really...)
+    if (!room[int16_t(camera.pos_x + camera.dir_x * d_speed)][int16_t(camera.pos_y)]) camera.pos_x += camera.dir_x * d_speed;
+    if (!room[int16_t(camera.pos_x)][int16_t(camera.pos_y + camera.dir_y * d_speed)]) camera.pos_y += camera.dir_y * d_speed;
+}
+
+/** Rotate the camera given the delta time. */
+void rotate(bool clockwise, double d_time) {
+
+    double rot_speed = d_time * ROTATE_SPEED;
+
+    if (clockwise) rot_speed = -rot_speed;
+
+    double rot_cos = cos(rot_speed);
+    double rot_sin = sin(rot_speed);
+
+    // Update the cameras direction
+    double old_dir = camera.dir_x;
+    camera.dir_x = old_dir * rot_cos - camera.dir_y * rot_sin;
+    camera.dir_y = old_dir * rot_sin + camera.dir_y * rot_cos;
+
+    // Update the cameras plane direction
+    double old_plane = camera.plane_x;
+    camera.plane_x = old_plane * rot_cos - camera.plane_y * rot_sin;
+    camera.plane_y = old_plane * rot_sin + camera.plane_y * rot_cos;
+}
+
+/** Render the frames per second. */
+void draw_fps(uint8_t fps) {
+    graphics.set_pen(0, 0, 0);
+
+    std::string fps_txt = "FPS: ";
+    fps_txt += std::to_string(fps);
+
+    graphics.text(fps_txt, Point(10, 10), 500, 2.5, 0.0, 1);
 }
 
 

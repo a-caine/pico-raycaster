@@ -3,6 +3,9 @@
 
 #include "pico/stdlib.h"
 
+#define MOVE_SPEED 5
+#define ROTATE_SPEED 3
+
 static volatile struct {
     // Position vector
     double pos_x; // Position of the camera in the x direction
@@ -39,8 +42,14 @@ void cast_ray(uint16_t x);
 /** Render a vertical line to the screen. */
 void draw_vertical_line(int16_t x, int16_t start, int16_t end, uint8_t col, uint8_t brightness);
 
-/** Move the camera in a given direction with a certain speed. */
-void move(uint8_t direction, double speed);
+/** Move the camera given the delta time. */
+void move(bool backwards, double d_time);
+
+/** Rotate the camera given the delta time. */
+void rotate(bool clockwise, double d_time);
+
+/** Render the frames per second. */
+void draw_fps(uint8_t fps);
 
 
 #endif
