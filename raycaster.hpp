@@ -22,17 +22,25 @@ static volatile struct {
 
 // Define the functions to actually render the raycasters
 
+/** Reset the state of all pixels. */
 void clear();
+/** Render the pixel state inside the graphics object to the screen. */
 void draw();
 
 /** Setup the camera for the raycaster. */
 void setup_camera();
 
+/** Cast all of the rays. */
+void raycast();
+
+/** Cast a ray out of the camera and render it to the screen.*/
+void cast_ray(uint16_t x);
 
 /** Render a vertical line to the screen. */
-void draw_vertical_line(int16_t x, int16_t start, int16_t end, uint8_t col);
+void draw_vertical_line(int16_t x, int16_t start, int16_t end, uint8_t col, uint8_t brightness);
 
-
+/** Move the camera in a given direction with a certain speed. */
+void move(uint8_t direction, double speed);
 
 
 #endif

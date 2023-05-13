@@ -17,7 +17,7 @@ int main() {
 
     stdio_init_all();
 
-    
+    setup_camera();    
 
     // Give the chip some time to set up
     sleep_ms(500);
@@ -27,10 +27,11 @@ int main() {
 
     
         clear();
-        for (int x = 0; x < 100; x++) {
-            draw_vertical_line(x, x - 25, x, 3);
-        }
+        raycast();
         draw();
+
+        //move(0, 1);
+        sleep_ms(100);
 
     }
 }
