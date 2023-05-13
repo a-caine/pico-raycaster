@@ -11,7 +11,7 @@ This project relies upon the pimoroni pico display library, instructions on how 
 
 This project also relies upon the standard pico-sdk, instructions on how to set this up can be found [here](https://datasheets.raspberrypi.com/pico/getting-started-with-pico.pdf)
 
-This repository contains both ~a stubbed example~, and a full solution should you get stuck at any point.
+This repository contains both a stubbed example, and a full solution should you get stuck at any point.
 
 ## Useful Links
 
