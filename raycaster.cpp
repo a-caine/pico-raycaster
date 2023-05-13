@@ -31,6 +31,9 @@ void setup_camera() {
     camera.pos_y = START_Y;
     camera.dir_x = -1;
     camera.dir_y = 0;
+    camera.camera_width = st7789.width;
+    camera.plane_x = 0;
+    camera.plane_y = 0.66;
 }
 
 /** Cast all of the rays. */
