@@ -1,8 +1,6 @@
-# Conways Game of Life - Coloured
+# Pico Raycaster
 
-The aim of this project is to simulate [Conway's game of life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life), but with an extra parameter; each cell in this variant of Conway's game of life has a colour associated with it.
-When a cell is born from parent cells, it should inherit each of the parents colours and mix them appropriately.
-For instance, a cell with a fully red parent (#FF0000), a fully green parent (#00FF00) and a fully blue parent (#0000FF) should be born with equal amounts of red green and blue (#555555).
+The aim of this project is to create a raycaster that can raycast a simple 2d scene and render it to the pimoroni pico display.
 
 ## Set-Up
 
